@@ -1,9 +1,27 @@
 {
-  "$schema":"https://schema.tauri.app/config/2",
-  "productName":"Voidium",
-  "version":"1.0.0",
-  "identifier":"com.voidium.browser",
-  "build":{"frontendDist":"../src","devUrl":"http://localhost:1420"},
-  "app":{"windows":[{"title":"Voidium","width":1440,"height":900,"minWidth":900,"minHeight":600,"resizable":true}]},
-  "bundle":{"active":true,"targets":["nsis"],"externalBin":["versoview/versoview"]}
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Voidium",
+  "version": "1.0.0",
+  "identifier": "com.voidium.browser",
+  "build": {
+    "frontendDist": "../src",
+    "devUrl": "http://localhost:1420"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [{
+      "title": "Voidium",
+      "width": 1440,
+      "height": 900,
+      "minWidth": 900,
+      "minHeight": 600,
+      "resizable": true
+    }]
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/icon.ico"],
+    "externalBin": ["versoview/versoview"]
+  }
 }
