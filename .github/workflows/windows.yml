@@ -1,40 +1,35 @@
-name: Voidium Windows
-
+name: Windows Release
 on:
-  workflow_dispatch:
   push:
-    branches: [main]
-
+    tags: ['v*']
+  workflow_dispatch:
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: voidium-${{ runner.os }}-${{ hashFiles('src-tauri/Cargo.lock') }}
-          restore-keys: |
-            voidium-${{ runner.os }}-
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --locked
-      - name: Build installer
-        working-directory: src-tauri
-        run: cargo tauri build
-      - name: Locate installer
+      - name: Build
+        run: cargo build --release
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+      - name: Create installer
         shell: pwsh
         run: |
-          Write-Host "Searching for Voidium installer..."
-          Get-ChildItem -Path "src-tauri/target/release/bundle" -Recurse -Filter "*.exe" | Select-Object FullName,Length
-      - name: Upload installer
-        uses: actions/upload-artifact@v4
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item target\release\voidium.exe dist\Voidium.exe
+          @'
+          [Setup]
+          AppName=Voidium 1.0
+          AppVersion=1.0.0
+          DefaultDirName={autopf}\Voidium
+          OutputDir=dist
+          OutputBaseFilename=Voidium-1.0-Setup
+          [Files]
+          Source: "dist\Voidium.exe"; DestDir: "{app}"
+          '@ | Set-Content installer.iss
+          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer.iss
+      - uses: actions/upload-artifact@v4
         with:
           name: Voidium-Windows
-          path: src-tauri/target/release/bundle/**/*.exe
-          if-no-files-found: error
-          compression-level: 6
-          overwrite: true
+          path: dist/*
