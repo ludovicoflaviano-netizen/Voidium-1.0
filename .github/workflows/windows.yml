@@ -1,38 +1,56 @@
 name: Windows Release
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - name: Build
-        run: cargo build --release
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+      - name: Build release
+        run: cargo build --release --locked
+      - name: Verify executable
+        shell: pwsh
+        run: |
+          if (!(Test-Path "target/release/voidium.exe")) { throw "Voidium executable was not produced." }
+          & "target/release/voidium.exe" --help
       - name: Install Inno Setup
         run: choco install innosetup --yes --no-progress
-      - name: Package
+      - name: Package installer
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item target\release\voidium.exe dist\Voidium.exe
+          Copy-Item "target/release/voidium.exe" "dist/Voidium.exe"
           @'
           [Setup]
-          AppName=Voidium 1.1
+          AppName=Voidium
           AppVersion=1.1.0
-          DefaultDirName={autopf}\Voidium
+          DefaultDirName={autopf}Voidium
           OutputDir=dist
-          OutputBaseFilename=Voidium-1.1-Setup
+          OutputBaseFilename=Voidium-1.1.0-Setup
           ArchitecturesInstallIn64BitMode=x64compatible
           Compression=lzma2
           SolidCompression=yes
           [Files]
-          Source: "dist\Voidium.exe"; DestDir: "{app}"
+          Source: "distVoidium.exe"; DestDir: "{app}"
+          [Icons]
+          Name: "{autodesktop}Voidium"; Filename: "{app}Voidium.exe"
+          Name: "{autoprograms}Voidium"; Filename: "{app}Voidium.exe"
           '@ | Set-Content installer.iss
-          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer.iss
-      - uses: actions/upload-artifact@v4
+          & "C:Program Files (x86)Inno Setup 6ISCC.exe" installer.iss
+      - name: Upload Windows files
+        uses: actions/upload-artifact@v4
         with:
-          name: Voidium-Windows
-          path: dist/*
+          name: Voidium-Windows-1.1.0
+          path: |
+            target/release/voidium.exe
+            dist/Voidium-1.1.0-Setup.exe
+          if-no-files-found: error

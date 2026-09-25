@@ -1,9 +1,10 @@
 [package]
 name = "voidium"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
-description = "Voidium 1.0: lightweight non-Chromium browser foundation"
+description = "Voidium 1.1: lightweight non-Chromium browser foundation"
 license = "MIT"
+build = "build.rs"
 
 [dependencies]
 anyhow = "1"
