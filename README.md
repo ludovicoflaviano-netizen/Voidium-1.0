@@ -1,29 +1,21 @@
 # Voidium 1.0
 
-Voidium is a privacy-focused desktop browser shell built around Servo/Verso instead of Chromium. The UI is plain HTML, CSS and JavaScript. The native layer is Rust.
+Voidium is a lightweight browser project designed without Chromium. The 1.0 foundation uses Rust for the native core and Reqwest with Rustls for HTTPS transport.
 
-## Features
-- Chromium-free browser engine architecture
-- HTTPS-first navigation
-- Private local settings with no telemetry service
-- Brave-style tabs and address/search bar
-- Searchable settings with 100+ preferences
-- Developer panel for page HTML/CSS/JavaScript work
-- Windows NSIS installer through Tauri
-- Release build caching in GitHub Actions
+Current foundation:
+- HTTPS-only navigation.
+- Rustls TLS rather than Chromium networking.
+- No telemetry, VPN, bundled ad network, or account requirement.
+- Persistent settings in the platform data directory.
+- Search and basic HTML-to-text viewing.
+- Developer-mode foundation.
+- A 100+ setting catalog is provided in ui/settings.js.
+- GitHub Actions builds Windows x64 and packages an Inno Setup installer.
 
-## Build
-Install Rust, Visual Studio 2022 C++ build tools, the Windows SDK and Git.
+A complete modern browser engine requires HTML parsing, CSS layout, JavaScript, DOM, graphics, media, accessibility, storage, sandboxing, and strong site compatibility. Recreating that engine from scratch is a multi-year project. Voidium keeps the native browser core separate from the UI and avoids Chromium while the engine grows.
 
-```powershell
-cargo install tauri-cli --version ^2
-git clone https://github.com/ludovicoflaviano-netizen/Voidium-1.0.git
-cd Voidium-1.0
-cargo tauri build
-```
+Build:
+cargo run
+cargo build --release
 
-The project uses Tauri Runtime Verso, which embeds the Servo browser engine rather than Chromium/WebView2. Servo currently supports Windows, macOS and Linux, but its embedding API is still evolving, so the engine adapter is isolated from the UI.
-
-Voidium intentionally does not include a VPN. HTTP compatibility is disabled by default.
-
-License: MPL-2.0.
+Windows releases are built by .github/workflows/windows.yml.
