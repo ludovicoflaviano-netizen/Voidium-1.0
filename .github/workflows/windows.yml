@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     tags: ['v*']
+
 jobs:
   build:
     runs-on: windows-latest
@@ -16,7 +17,7 @@ jobs:
       - name: Cache Cargo
         uses: Swatinem/rust-cache@v2
       - name: Build release
-        run: cargo build --release --locked
+        run: cargo build --release
       - name: Verify executable
         shell: pwsh
         run: |
@@ -33,19 +34,19 @@ jobs:
           [Setup]
           AppName=Voidium
           AppVersion=1.1.0
-          DefaultDirName={autopf}Voidium
+          DefaultDirName={autopf}\Voidium
           OutputDir=dist
           OutputBaseFilename=Voidium-1.1.0-Setup
           ArchitecturesInstallIn64BitMode=x64compatible
           Compression=lzma2
           SolidCompression=yes
           [Files]
-          Source: "distVoidium.exe"; DestDir: "{app}"
+          Source: "dist\Voidium.exe"; DestDir: "{app}"
           [Icons]
-          Name: "{autodesktop}Voidium"; Filename: "{app}Voidium.exe"
-          Name: "{autoprograms}Voidium"; Filename: "{app}Voidium.exe"
+          Name: "{autodesktop}\Voidium"; Filename: "{app}\Voidium.exe"
+          Name: "{autoprograms}\Voidium"; Filename: "{app}\Voidium.exe"
           '@ | Set-Content installer.iss
-          & "C:Program Files (x86)Inno Setup 6ISCC.exe" installer.iss
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
       - name: Upload Windows files
         uses: actions/upload-artifact@v4
         with:
