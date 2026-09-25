@@ -13,18 +13,21 @@ jobs:
         run: cargo build --release
       - name: Install Inno Setup
         run: choco install innosetup --yes --no-progress
-      - name: Create installer
+      - name: Package
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
           Copy-Item target\release\voidium.exe dist\Voidium.exe
           @'
           [Setup]
-          AppName=Voidium 1.0
-          AppVersion=1.0.0
+          AppName=Voidium 1.1
+          AppVersion=1.1.0
           DefaultDirName={autopf}\Voidium
           OutputDir=dist
-          OutputBaseFilename=Voidium-1.0-Setup
+          OutputBaseFilename=Voidium-1.1-Setup
+          ArchitecturesInstallIn64BitMode=x64compatible
+          Compression=lzma2
+          SolidCompression=yes
           [Files]
           Source: "dist\Voidium.exe"; DestDir: "{app}"
           '@ | Set-Content installer.iss

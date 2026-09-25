@@ -1,21 +1,17 @@
-# Voidium 1.0
+# Voidium 1.1
 
-Voidium is a lightweight browser project designed without Chromium. The 1.0 foundation uses Rust for the native core and Reqwest with Rustls for HTTPS transport.
+Voidium is a non-Chromium browser project with a small native core and a custom HTML/CSS/JS interface.
 
-Current foundation:
-- HTTPS-only navigation.
-- Rustls TLS rather than Chromium networking.
-- No telemetry, VPN, bundled ad network, or account requirement.
-- Persistent settings in the platform data directory.
-- Search and basic HTML-to-text viewing.
-- Developer-mode foundation.
-- A 100+ setting catalog is provided in ui/settings.js.
-- GitHub Actions builds Windows x64 and packages an Inno Setup installer.
+This upgrade fixes the previous release pipeline and redesigns the desktop UI for DPI scaling, narrow windows, high-DPI screens, and responsive layouts.
 
-A complete modern browser engine requires HTML parsing, CSS layout, JavaScript, DOM, graphics, media, accessibility, storage, sandboxing, and strong site compatibility. Recreating that engine from scratch is a multi-year project. Voidium keeps the native browser core separate from the UI and avoids Chromium while the engine grows.
+Added:
+- Responsive browser shell with tabs and address bar.
+- Better 100+ setting search and grouped settings.
+- Settings persistence with localStorage.
+- Optimizer panel for safe browser-side performance settings.
+- DPI-aware CSS using viewport units and clamp().
+- Mobile/narrow-window fallbacks.
+- Cleaner dark UI with reduced visual clutter.
+- Windows x64 installer workflow.
 
-Build:
-cargo run
-cargo build --release
-
-Windows releases are built by .github/workflows/windows.yml.
+The current native core remains an early browser engine foundation. It does not yet implement full HTML/CSS/JavaScript compatibility like mature browsers.
